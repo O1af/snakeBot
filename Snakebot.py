@@ -38,11 +38,11 @@ async def leaderboard(ctx):
     await ctx.send(leaderboard_str)
 
 
-@ bot.command()
-@has_permissions(kick_members=True)
+@bot.command()
 async def setsnake(ctx, target: discord.Member, snakecount):
-    data[target.name] = snakecount
-    await ctx.send("Snake set")
+    if (ctx.author.guild_permissions.administrator):
+        data[target.name] = snakecount
+        await ctx.send("Snake set")
 
 
 @ bot.command()
@@ -53,6 +53,7 @@ async def stop(ctx, target: discord.Member):
         f.close()
         bot.close()
         exit()
+        
 token = open('token.txt', 'r')
 botToken = token.read()
 bot.run(botToken)
