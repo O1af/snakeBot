@@ -31,7 +31,18 @@ async def leaderboard(ctx):
         my_biggest_key = max(order, key=order.get)
         snakes[my_biggest_key] = order[my_biggest_key]
         order.pop(my_biggest_key)
-    await ctx.send(snakes)
+    leaderboard_str = ""
+    for key, value in snakes.items():
+        leaderboard_str += key + ": " + \
+            str(value) + " snakes" + "\n"
+    await ctx.send(leaderboard_str)
+
+
+@ bot.command()
+@has_permissions(kick_members=True)
+async def setsnake(ctx, target: discord.Member, snakecount):
+    data[target.name] = snakecount
+    await ctx.send("Snake set")
 
 
 @ bot.command()
