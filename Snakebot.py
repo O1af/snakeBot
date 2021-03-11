@@ -65,7 +65,7 @@ async def leaderboard(ctx):
     snakes = {}
     order = data.copy()
     while len(order) > 0:
-        my_biggest_key = max(order, key=order.get)
+        my_biggest_key = max(order, key=lambda key: order[key])
         snakes[my_biggest_key] = order[my_biggest_key]
         order.pop(my_biggest_key)
     leaderboard_str = ""
@@ -75,10 +75,10 @@ async def leaderboard(ctx):
     await ctx.send(leaderboard_str)
 
 
-@bot.command()
+@bot.command(aliases = ['sb/lb'])
 async def setsnake(ctx, target: discord.Member, snakecount):
     if (ctx.author.guild_permissions.administrator or ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
-        data[target.name] = snakecount
+        data[target.name] = int(snakecount)
 
         with open('data.json', 'w') as storage:
             json.dump(data, storage)
