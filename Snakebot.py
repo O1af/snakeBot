@@ -43,6 +43,7 @@ async def on_raw_reaction_add(payload):
                     json.dump(data, storage)
 
                 await info[1].send(target.name + " has been found guilty of snakery")
+                del LoggedMessages[payload.message.id]
 
                 break
 
@@ -76,14 +77,14 @@ async def leaderboard(ctx):
 
 @bot.command()
 async def setsnake(ctx, target: discord.Member, snakecount):
-    if (ctx.author.guild_permissions.administrator):
+    if (ctx.author.guild_permissions.administrator or ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
         data[target.name] = snakecount
         await ctx.send("Snake set")
 
 
 @ bot.command()
 async def stop(ctx, target: discord.Member):
-    if (ctx.id == 363396359841251328):
+    if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
         await ctx.send("Cya")
         f.write(json.dumps(data))
         f.close()
