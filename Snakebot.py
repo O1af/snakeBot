@@ -46,12 +46,41 @@ async def on_raw_reaction_add(payload):
                 del LoggedMessages[payload.message_id]
 
                 break
+    elif (payload.message_id in LoggedMessages and payload.emoji.name == '🦡'):
+
+        info = LoggedMessages[payload.message_id]
+        target = info[0]
+        msg = info[1].message
+
+        for i in msg.reactions:
+
+            if (i.emoji == '🦡' and i.count == 5):
+
+                if(str(target.name) not in data):
+                    data[target.name] = -1
+                else:
+                    data[target.name] = int(data[target.name]) - 1
+
+                with open('data.json', 'w') as storage:
+                    json.dump(data, storage)
+
+                await info[1].send(target.name + " has been found innocent of snakery")
+                del LoggedMessages[payload.message_id]
+
+                break
 
 
 @bot.command()
 async def snake(ctx, target: discord.Member):
     await ctx.send(target.name + "'s snakery has been noted")
     await ctx.message.add_reaction('🐍')
+    LoggedMessages[ctx.message.id] = (target, ctx, datetime.now())
+
+
+@bot.command()
+async def mongoose(ctx, target: discord.Member):
+    await ctx.send(target.name + "'s mongoosery has been noted")
+    await ctx.message.add_reaction('🦡')
     LoggedMessages[ctx.message.id] = (target, ctx, datetime.now())
 
 
@@ -75,14 +104,14 @@ async def leaderboard(ctx):
     await ctx.send(leaderboard_str)
 
 
-@bot.command(aliases = ['sb/lb'])
+@bot.command(aliases=['sb/lb'])
 async def setsnake(ctx, target: discord.Member, snakecount):
     if (ctx.author.guild_permissions.administrator or ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
         data[target.name] = int(snakecount)
 
         with open('data.json', 'w') as storage:
             json.dump(data, storage)
-            
+
         await ctx.send("Snake set")
 
 
