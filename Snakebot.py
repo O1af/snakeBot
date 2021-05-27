@@ -106,7 +106,7 @@ async def leaderboard(ctx):
 
 @bot.command(aliases=['sb/lb'])
 async def setsnake(ctx, target: discord.Member, snakecount):
-    if (ctx.author.guild_permissions.administrator or ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
+    if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
         data[target.name] = int(snakecount)
 
         with open('data.json', 'w') as storage:
