@@ -1,5 +1,6 @@
 import json
 import discord
+from discord import message
 from discord.ext import commands
 from datetime import datetime
 import asyncio
@@ -75,6 +76,22 @@ async def snake(ctx, target: discord.Member):
     await ctx.send(target.name + "'s snakery has been noted")
     await ctx.message.add_reaction('🐍')
     LoggedMessages[ctx.message.id] = (target, ctx, datetime.now())
+
+
+@bot.command(aliases=["say"])
+async def echo(ctx, *, content: str):
+
+    if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
+        # This delete an message in the channel
+        await ctx.message.delete()
+        await ctx.send(content)  # This the echo
+
+
+@bot.command()
+async def intro(ctx):
+    if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
+        await ctx.message.delete()
+        await ctx.send("I have returned @everyone")
 
 
 @bot.command()
