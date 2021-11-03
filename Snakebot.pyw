@@ -33,7 +33,7 @@ async def on_raw_reaction_add(payload):
 
         for i in msg.reactions:
 
-            if (i.emoji == '🐍' and i.count == 4):
+            if (i.emoji == '🐍' and i.count == 6):
 
                 if(str(target.name) not in data):
                     data[target.name] = 1
@@ -55,7 +55,7 @@ async def on_raw_reaction_add(payload):
 
         for i in msg.reactions:
 
-            if (i.emoji == '🦡' and i.count == 5):
+            if (i.emoji == '🦡' and i.count == 6):
 
                 if(str(target.name) not in data):
                     data[target.name] = -1
