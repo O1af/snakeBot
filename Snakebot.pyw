@@ -13,7 +13,19 @@ f = open('data.json', 'r+')
 data = json.loads(f.read())
 bot = commands.Bot(command_prefix="sb/")
 
+banList = open('ban.json', 'r+')
+bans = json.loads(banList.read())
 LoggedMessages = {}
+
+
+def check_if_banned(user):
+    banList = open('ban.json', 'r+')
+    bans = json.loads(banList.read())
+    for i in bans:
+        if i == user.id:
+            return True
+        else:
+            return False
 
 
 @bot.event
@@ -73,9 +85,12 @@ async def on_raw_reaction_add(payload):
 
 @bot.command()
 async def snake(ctx, target: discord.Member):
-    await ctx.send(target.name + "'s snakery has been noted")
-    await ctx.message.add_reaction('🐍')
-    LoggedMessages[ctx.message.id] = (target, ctx, datetime.now())
+    if (check_if_banned(ctx.author)):
+        await ctx.send("You are banned from using this command")
+    else:
+        await ctx.send(target.name + "'s snakery has been noted")
+        await ctx.message.add_reaction('🐍')
+        LoggedMessages[ctx.message.id] = (target, ctx, datetime.now())
 
 
 @bot.command(aliases=["say"])
@@ -89,9 +104,12 @@ async def echo(ctx, *, content: str):
 
 @bot.command()
 async def intro(ctx):
-    if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
-        await ctx.message.delete()
-        await ctx.send("I have returned @everyone")
+    if (check_if_banned(ctx.author)):
+        await ctx.send("You are banned from using this command")
+    else:
+        if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
+            await ctx.message.delete()
+            await ctx.send("I have returned @everyone")
 
 
 @bot.command()
@@ -106,7 +124,7 @@ async def getSnakeCount(ctx, target: discord.Member):
     await ctx.send(target.name + " has snaked people " + str(data[target.name]) + " times")
 
 
-@bot.command()
+@bot.command(aliases=["lb"])
 async def leaderboard(ctx):
     snakes = {}
     order = data.copy()
@@ -121,7 +139,7 @@ async def leaderboard(ctx):
     await ctx.send(leaderboard_str)
 
 
-@bot.command(aliases=['sb/lb'])
+@bot.command(aliases=[''])
 async def setsnake(ctx, target: discord.Member, snakecount):
     if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
         data[target.name] = int(snakecount)
@@ -143,6 +161,31 @@ async def stop(ctx):
         f.close()
         bot.close()
         exit()
+
+
+@bot.command()
+async def ban(ctx, user: discord.Member):
+    if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
+        if (user.id not in bans):
+            bans.append(user.id)
+            print(bans)
+            await ctx.send("User has been banned")
+        else:
+            await ctx.send("User is already banned")
+        with open('ban.json', 'w') as storage:
+            json.dump(bans, storage)
+
+
+@bot.command(aliases=['pardon', 'Pardon', 'Unban'])
+async def unban(ctx, user: discord.Member):
+    if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
+        if (user.id in bans):
+            bans.pop(user.id)
+            await ctx.send("User has been unbanned")
+        else:
+            await ctx.send("User is not banned")
+        with open('data.json', 'w') as storage:
+            json.dump(bans, storage)
 
 
 async def CheckMsgTimestamps():
