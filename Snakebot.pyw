@@ -180,12 +180,12 @@ async def ban(ctx, user: discord.Member):
 async def unban(ctx, user: discord.Member):
     if (ctx.author.id == 363396359841251328 or ctx.author.id == 233753795220209665):
         if (user.id in bans):
-            bans.pop(user.id)
+            bans.remove(user.id)
             await ctx.send("User has been unbanned")
         else:
             await ctx.send("User is not banned")
-        with open('data.json', 'w') as storage:
-            json.dump(bans, storage)
+            with open('ban.json', 'w') as storage:
+                json.dump(bans, storage)
 
 
 async def CheckMsgTimestamps():
